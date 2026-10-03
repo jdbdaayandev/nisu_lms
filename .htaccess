@@ -1,0 +1,38 @@
+RewriteEngine On
+
+# ============================================================
+# 1. REMOVE .php FROM THE URL DYNAMICALLY
+# ============================================================
+# This dynamically grabs whatever folder path is in the browser
+# and removes the .php extension via a 301 Redirect.
+
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L,NE]
+
+
+# ============================================================
+# 2. DON'T REWRITE REAL FILES OR DIRECTORIES
+# ============================================================
+# CSS, JS, images, and actual folders should continue working.
+
+RewriteCond %{REQUEST_FILENAME} -d [OR]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^ - [L]
+
+
+# ============================================================
+# 3. ADD .php INTERNALLY
+# ============================================================
+# Silently adds .php behind the scenes if the file actually exists.
+
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+
+# ============================================================
+# 4. MVC FRONT CONTROLLER (Optional)
+# ============================================================
+# Anything that isn't a real file, directory, or .php file goes to index.php.
+# (Uncomment the line below if you are using an index.php router later)
+
+# RewriteRule ^ index.php [L]
